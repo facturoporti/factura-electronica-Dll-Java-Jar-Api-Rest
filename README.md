@@ -377,7 +377,7 @@ public class probar {
 
 Si usas el proyecto con el código de ejemplo **Ejecuta o depura la aplicación** automáticamente se generará el Xml y PDF con los datos que ingresaste (es una aplicación de consola que te sirve para depurar la información que envias y recibes). En caso de que lo integres a tu solución recuerda tener las referencias correspondientes a los requerimientos especificados anterioremente. 
 
-Revisa el objeto de respuesta CFDITimbradoRespuesta en el encontraras tanto el XML, PDF, timbre fiscal, estatus, errores, etc. **Todo codigo de error diferente de "000" indica algún tipo de error ** que se debe de revisar y corregir.
+Revisa el objeto de respuesta CFDITimbradoRespuesta en el encontraras tanto el XML, PDF, timbre fiscal, estatus, errores, etc. **Todo codigo de error diferente de "000" indica algún tipo de error** que se debe de revisar y corregir.
 
 Los atributos **CFDIXML, TimbreXML y PDF estan en Base64** se deberán de convertir a texto para obtener el XML y/o timbre del CFDI, en el caso del PDF lo podrán guardar o convertir de manera binaria para obtener la representación impresa. Esto ya se hace en el proyecto de ejemplo.
 
