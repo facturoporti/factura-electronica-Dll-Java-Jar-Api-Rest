@@ -19,7 +19,7 @@ import java.time.format.DateTimeFormatter;
 
 public class probar {
 
-	private static final String DirectorioRecursos = "C:\\Alejandro\\JavaDllConsumirApiRest\\Tester\\";
+	private static final String DirectorioRecursos = "C:\\Alejandro\\JavaDllConsumirApiRest\\src\\Tester\\";
 	
 	private static String UUID;
 	private static String getUUID()
