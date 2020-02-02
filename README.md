@@ -2,41 +2,27 @@
 
 ![banner](GitHub.png)
 
-# Librería en .Net para Timbrar y Cancelar Facturas Electrónicas de cualquier tipo
+# Proyecto en Java (jar) para Timbrar y Cancelar Facturas Electrónicas de cualquier tipo
 
 ![C# badge](subtitulo-badge.png)
 
 </div>
 
-Librería en **.Net Standard** que permite generar cualquier tipo de comprobante digital **Ingreso, Egreso, Traslado, Nomina, Pago, etc.(Xml y PDF)** llenando los datos correspondientes fácilmente podrás generar las facturas digitales en cuestión de minutos. 
+**Jar hecho en Java** que permite generar cualquier tipo de comprobante digital **Ingreso, Egreso, Traslado, Nomina, Pago, etc.(Xml y PDF)** llenando los datos correspondientes fácilmente podrás generar las facturas digitales en cuestión de minutos. 
 
-**Es ideal y compatible para integrarla en cualquier tipo de proyecto ya sean aplicaciones web, escritorio, moviles (Mono, Xamarin), silverligth, WPF, .Net Core, Universal Windows Platform, Unity, etc.** usa la librería directamente en el proyecto o agrega la referencia usando - [NuGet Package](https://www.nuget.org/packages/FacturoPorTi.Api.Cfdi)
+**Es ideal y compatible para integrarla en cualquier tipo de proyecto ya sean aplicaciones web, escritorio, moviles, etc.** usa el Jar  directamente en el proyecto o agrega el código fuente desde el proyecto y modifícalo de acuerdo a tus necesidades. 
 
-Con esta libería además podrás timbrar, cancelar, obtener estatus del CFDI ante el SAT, consultar los timbres restantes entre otras cosas. 
+Estos proyectos te pérmiten timbrar, cancelar, obtener estatus del CFDI ante el SAT, consultar los timbres restantes entre otras cosas. 
 
-No necesitas saber ninguna regla del SAT la librería generará el XML de acuerdo al anexo 20, la librería se encarga de todo  facilitando el proceso de integración de tu sistema y/o aplicación, servicio, para cumplir con lo que solicita el SAT.
+No necesitas saber ninguna regla del SAT el Jar generará el XML de acuerdo al anexo 20, además se encarga de todo  facilitando el proceso de integración de tu sistema y/o aplicación, servicio, para cumplir con lo que solicita el SAT.
 
-La librería es muy liviana y rápida, utiliza llamadas Rest Api que permitirá generar tus CFDIs y enviar los por correo todo al mismo tiempo. 
+El archivo es muy liviano y rápido, utiliza llamadas Rest Api que permitirá generar tus CFDIs y enviar los por correo todo al mismo tiempo. 
 
 ## Requerimientos
 
-Se recomienda usar el IDE de desarrollo Visual Studio 2015 o 2017 community o superior. Todas las versiones community son gratuitas y se pueden descargar desde https://visualstudio.microsoft.com/es/vs/community/ 
+Se recomienda usar cualquier IDE de desarrollo para Java. El que se uso para desarrollar esta herramienta es Eclipse Jee 2019-03. 
 
-La librería tiene como requerimientos: 
-
-- **Newtonsoft.Json 12.0.3**
-- **Portable.BouncyCastle 1.8.5.2**
-
-Además revisa la versión de framework que necesitas de acuerdo a tu proyecto:
-
-![Versión Framework](FrameworkSupport.PNG)
-
-## Instalación
-
-Obten la última versión de la librería de  timbrado de FacturoPorTi  en **NuGet**:
-**[FacturoPorTi.CFDI](https://www.nuget.org/packages/FacturoPorTi.Api.Cfdi "FacturoPorTi.Api.Cfdi")**
-
-En [GitHub - FacturoPorTi-Factura-Electronica-dll](https://github.com/facturoporti/factura-electronica-Dll-Api-Rest "GitHub - FacturoPorTi-Factura-Electronica-dll") esta un proyecto de ejemplo completo del uso de todos los métodos de la librería; te recomendamos ampliamente que lo descargues y hagas pruebas con el.  
+El jar tiene diferentes requerimientos que estan en la carpeta de recursos lib (Referenced Libraries)
 
 ## Timbrar
 
@@ -46,263 +32,344 @@ Para mandar una peticion para timbrar se debe de generar un objeto de tipo **CFD
 - EncabezadoCFDI
 - ConceptoCFDI
 
-```csharp
+```java
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+package facturoporti.api.cfdi.tester;
 
-using FacturoPorTi.Api.Cfdi;
-using FacturoPorTi.Api.Cfdi.Entidades;
-using FacturoPorTi.Api.Cfdi.Genericos;
+import facturoporti.api.cfdi.*;
+import facturoporti.api.cfdi.entidades.*;
+import facturoporti.api.cfdi.genericos.*;
 
-  private static void TimbrarDocumento()
-        {
-            Archivos manager = new Archivos();
+import java.util.*;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
-            TimbreFiscalDigital Timbre = new TimbreFiscalDigital();
-            CFDIPeticion Peticion = new CFDIPeticion();
-            Utilerias utilerias = new Utilerias();
-            string NombreArchivo = string.Empty;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
-            #region "Datos Generales"
+import java.io.*;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 
-            Peticion.DatosGenerales = new DatosGeneralesCFDI();
-            Peticion.DatosGenerales.Usuario = "PruebasTimbrado"; // Este usuario se genera desde la pagina de https://cfdi.facturoporti.com.mx/ se debe de registrar para usar el productivo
-            Peticion.DatosGenerales.Password = "@Notiene1"; // Es la contraseña del usuario cuando se registró
-            Peticion.DatosGenerales.GeneraPDF = "true";
-            Peticion.DatosGenerales.EnviaEmail = "false"; // Valores permitidos "true" : "false";
-            Peticion.DatosGenerales.ReceptorEmail = "correodestino@midominio.com";
 
-            //Logotipo (opcional) acepta una imagen jpeg o png en base 64 menor a 100 KB
-            //Peticion.DatosGenerales.Logotipo = manager.ConvertirByteToBase64(manager.ConvertirStreamToByte(manager.Abrir("Cambiar la ruta de lectura o enviar la imagen en base 64")));
 
-            enumTipoDocumento TipoDocumentoActual = enumTipoDocumento.Factura;
+public class probar {
 
-            switch (TipoDocumentoActual)
-            {
-                case enumTipoDocumento.Factura:
-                    Peticion.DatosGenerales.CFDI = "Factura";
-                    Peticion.DatosGenerales.TipoCFDI = "Ingreso";
-                    break;
-                case enumTipoDocumento.NotaCargo:
-                    Peticion.DatosGenerales.CFDI = "NotaCargo";
-                    Peticion.DatosGenerales.TipoCFDI = "Ingreso";
-                    break;
-                case enumTipoDocumento.NotaCredito:
-                    Peticion.DatosGenerales.CFDI = "NotaCredito";
-                    Peticion.DatosGenerales.TipoCFDI = "Egreso";
-                    break;
-                case enumTipoDocumento.CartaPorte:
-                    Peticion.DatosGenerales.CFDI = "CartaPorte";
-                    Peticion.DatosGenerales.TipoCFDI = "Traslado";
-                    break;
-                case enumTipoDocumento.Pago:
-                    Peticion.DatosGenerales.CFDI = "Pago";
-                    Peticion.DatosGenerales.TipoCFDI = "Pago";
-                    break;
-                case enumTipoDocumento.ReciboNominaCFDI:
-                    Peticion.DatosGenerales.CFDI = "ReciboNomina";
-                    Peticion.DatosGenerales.TipoCFDI = "ReciboNomina";
-                    break;
-            }
+	private static final String DirectorioRecursos = "C:\\Alejandro\\JavaDllConsumirApiRest\\src\\Tester\\";
+	
+	private static String UUID;
+	private static String getUUID()
+	{
+		return UUID;
+	}
+	private static void setUUID(String value)
+	{
+		UUID = value;
+	}
+		
+	public static void main(String[] args) throws FileNotFoundException, IOException, SAXException, ParserConfigurationException {
 
-            Peticion.DatosGenerales.OpcionDecimales = ((int)enumOpcionDecimales.Redondear).ToString(); // Valores permitidos 1: Truncar (Operaciones exactas) 2: Redondear hacia arriba o hacia abajo las cantidades 
-            Peticion.DatosGenerales.NumeroDecimales = "2"; // El valor predeterminado es 2 hasta un máximo de 6 decimales
+		TimbrarDocumento();
+		CancelarUUID();
+		ConsultarEstatusUUID();
+		ConsultarTimbresRestantes();
+	}
+	
+	private static void TimbrarDocumento() throws FileNotFoundException, IOException, SAXException, ParserConfigurationException
+	{
+		Archivos manager = new Archivos();
 
-            #endregion "Datos Generales"
+		TimbreFiscalDigital Timbre = new TimbreFiscalDigital();
+		CFDIPeticion Peticion = new CFDIPeticion();
+		Utilerias utilerias = new Utilerias();
+		String NombreArchivo = "";
 
-            #region "Encabezado"
+		Peticion.setDatosGenerales(new DatosGeneralesCFDI());
+		Peticion.getDatosGenerales().setUsuario("PruebasTimbrado"); // Este usuario se genera desde la pagina de https://cfdi.facturoporti.com.mx/ se debe de registrar para usar el productivo
+		Peticion.getDatosGenerales().setPassword("@Notiene1"); // Es la contraseña del usuario cuando se registró
+		Peticion.getDatosGenerales().setGeneraPDF("true");
+		Peticion.getDatosGenerales().setEnviaEmail("false"); // Valores permitidos "true" : "false";
+		Peticion.getDatosGenerales().setReceptorEmail("correodestino@midominio.com");
 
-            #region "Emisor"
+		//Logotipo (opcional) acepta una imagen jpeg o png en base 64 menor a 100 KB
+		//Peticion.DatosGenerales.Logotipo = manager.ConvertirByteToBase64(manager.ConvertirStreamToByte(manager.Abrir("Cambiar la ruta de lectura o enviar la imagen en base 64")));
 
-            Peticion.Encabezado = new EncabezadoCFDI();
-            Peticion.Encabezado.Emisor = new EmisorCFDI();
-            Peticion.Encabezado.Emisor.RFC = "AAA010101AAA"; // Para realizar pruebas solamente se puede usar este RFC AAA010101AAA
-            Peticion.Encabezado.Emisor.NombreRazonSocial = "Mi nombre o el nombre de mi empresa";
-            Peticion.Encabezado.Emisor.RegimenFiscal = "601"; // Se agrega la clave de acuerdo al catálogo del SAT http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
+		enumTipoDocumento TipoDocumentoActual = enumTipoDocumento.Factura;
 
-            // El domicilio de emision es opcional pero se agrega por peticion del usuario
-            DireccionCFDI direccion = new DireccionCFDI();
+		switch (TipoDocumentoActual)
+		{
+			case Factura:
+				Peticion.getDatosGenerales().setCFDI("Factura");
+				Peticion.getDatosGenerales().setTipoCFDI("Ingreso");
+				break;
+			case NotaCargo:
+				Peticion.getDatosGenerales().setCFDI("NotaCargo");
+				Peticion.getDatosGenerales().setTipoCFDI("Ingreso");
+				break;
+			case NotaCredito:
+				Peticion.getDatosGenerales().setCFDI("NotaCredito");
+				Peticion.getDatosGenerales().setTipoCFDI("Egreso");
+				break;
+			case CartaPorte:
+				Peticion.getDatosGenerales().setCFDI("CartaPorte");
+				Peticion.getDatosGenerales().setTipoCFDI("Traslado");
+				break;
+			case Pago:
+				Peticion.getDatosGenerales().setCFDI("Pago");
+				Peticion.getDatosGenerales().setTipoCFDI("Pago");
+				break;
+			case ReciboNominaCFDI:
+				Peticion.getDatosGenerales().setCFDI("ReciboNomina");
+				Peticion.getDatosGenerales().setTipoCFDI("ReciboNomina");
+				break;
+		}
 
-            direccion.Calle = "Avenida Reforma";
-            direccion.NumeroExterior = "1234";
-            direccion.NumeroInterior = "XA";
-            direccion.Colonia = "Roma Norte";
-            direccion.Estado = "Ciudad de México";
-            direccion.Municipio = "Benito Juarez";
-            direccion.Pais = "México";
-            direccion.CodigoPostal = "06470";
+		Peticion.getDatosGenerales().setOpcionDecimales(String.valueOf((enumOpcionDecimales.Redondear.getValue()))); // Valores permitidos 1: Truncar (Operaciones exactas) 2: Redondear hacia arriba o hacia abajo las cantidades
+		Peticion.getDatosGenerales().setNumeroDecimales("2"); // El valor predeterminado es 2 hasta un máximo de 6 decimales
 
-            Peticion.Encabezado.Emisor.Direccion = new List<DireccionCFDI>();
-            Peticion.Encabezado.Emisor.Direccion.Add(direccion);
+		Peticion.setEncabezado(new EncabezadoCFDI());
+		Peticion.getEncabezado().setEmisor(new EmisorCFDI());
+		Peticion.getEncabezado().getEmisor().setRFC("AAA010101AAA"); // Para realizar pruebas solamente se puede usar este RFC AAA010101AAA
+		Peticion.getEncabezado().getEmisor().setNombreRazonSocial("Mi nombre o el nombre de mi empresa");
+		Peticion.getEncabezado().getEmisor().setRegimenFiscal("601"); // Se agrega la clave de acuerdo al catálogo del SAT http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
 
-            #endregion "Emisor"
+		// El domicilio de emision es opcional pero se agrega por peticion del usuario
+		DireccionCFDI direccion = new DireccionCFDI();
 
-            #region "Receptor"
+		direccion.setCalle("Avenida Reforma");
+		direccion.setNumeroExterior("1234");
+		direccion.setNumeroInterior("XA");
+		direccion.setColonia("Roma Norte");
+		direccion.setEstado("Ciudad de México");
+		direccion.setMunicipio("Benito Juarez");
+		direccion.setPais("México");
+		direccion.setCodigoPostal("06470");
 
-            Peticion.Encabezado.Receptor = new ReceptorCFDI();
-            Peticion.Encabezado.Receptor.RFC = "XEXX010101000";
-            Peticion.Encabezado.Receptor.NombreRazonSocial = "Nombre del cliente";
-            Peticion.Encabezado.Receptor.UsoCFDI = "G03"; // Se agrega la clave de acuerdo al catálogo del SAT http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
+		Peticion.getEncabezado().getEmisor().setDireccion(new ArrayList<DireccionCFDI>());
+		Peticion.getEncabezado().getEmisor().getDireccion().add(direccion);
 
-            // El domicilio del receptor es opcional pero se agrega por peticion del usuario
-            direccion = new DireccionCFDI();
+		Peticion.getEncabezado().setReceptor(new ReceptorCFDI());
+		Peticion.getEncabezado().getReceptor().setRFC("XEXX010101000");
+		Peticion.getEncabezado().getReceptor().setNombreRazonSocial("Nombre del cliente");
+		Peticion.getEncabezado().getReceptor().setUsoCFDI("G03"); // Se agrega la clave de acuerdo al catálogo del SAT http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
 
-            direccion.Calle = "Leo";
-            direccion.NumeroExterior = "9876";
-            direccion.NumeroInterior = "A-34";
-            direccion.Colonia = "San Rafael";
-            direccion.Estado = "Morelos";
-            direccion.Municipio = "Cuernavaca";
-            direccion.Pais = "México";
-            direccion.CodigoPostal = "62775";
+		// El domicilio del receptor es opcional pero se agrega por peticion del usuario
+		direccion = new DireccionCFDI();
 
-            Peticion.Encabezado.Receptor.Direccion = direccion;
+		direccion.setCalle("Leo");
+		direccion.setNumeroExterior("9876");
+		direccion.setNumeroInterior("A-34");
+		direccion.setColonia("San Rafael");
+		direccion.setEstado("Morelos");
+		direccion.setMunicipio("Cuernavaca");
+		direccion.setPais("México");
+		direccion.setCodigoPostal("62775");
 
-            #endregion "Receptor"
+		Peticion.getEncabezado().getReceptor().setDireccion(direccion);
+		
+		LocalDateTime now = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
-            Peticion.Encabezado.Fecha = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"); // Se debe de enviar con el formato indicado yyyy-MM-ddTHH:mm:ss
-            Peticion.Encabezado.Serie = "A"; // Es el numero de serie es un valor opcional
-            Peticion.Encabezado.Folio = "12"; // Es el numero de folio es un valor opcional
-            Peticion.Encabezado.MetodoPago = "PUE";// Se agrega la clave de acuerdo al catálogo del SAT http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
-            Peticion.Encabezado.FormaPago = "99";// Se agrega la clave de acuerdo al catálogo del SAT http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
-            Peticion.Encabezado.Moneda = "MXN"; // Se agrega la clave de acuerdo al catálogo del SAT http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
-            Peticion.Encabezado.LugarExpedicion = "06470";
-            Peticion.Encabezado.SubTotal = "1500"; // Es la suma de los importes en bruto
-            Peticion.Encabezado.Total = "1740"; // Es la suma de los importes + los impuestos trasladados - los impuestos retenidos
+		Peticion.getEncabezado().setFecha(now.format(formatter)); // Se debe de enviar con el formato indicado yyyy-MM-ddTHH:mm:ss
+		Peticion.getEncabezado().setSerie("A"); // Es el numero de serie es un valor opcional
+		Peticion.getEncabezado().setFolio("12"); // Es el numero de folio es un valor opcional
+		Peticion.getEncabezado().setMetodoPago("PUE"); // Se agrega la clave de acuerdo al catálogo del SAT http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
+		Peticion.getEncabezado().setFormaPago("99"); // Se agrega la clave de acuerdo al catálogo del SAT http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
+		Peticion.getEncabezado().setMoneda("MXN"); // Se agrega la clave de acuerdo al catálogo del SAT http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
+		Peticion.getEncabezado().setLugarExpedicion("06470");
+		Peticion.getEncabezado().setSubTotal("1500"); // Es la suma de los importes en bruto
+		Peticion.getEncabezado().setTotal("1740"); // Es la suma de los importes + los impuestos trasladados - los impuestos retenidos
 
-            #endregion "Encabezado"
+		Peticion.setConceptos(new ArrayList<ConceptoCFDI>());
 
-            #region "Conceptos"
+		ConceptoCFDI concepto = new ConceptoCFDI();
 
-            Peticion.Conceptos = new List<ConceptoCFDI>();
+		concepto.setCantidad("1");
+		concepto.setCodigoUnidad("E48"); // Se agrega la clave de acuerdo al catálogo del SAT http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
+		//concepto.Unidad = "Pieza"; // Este es un valor opcional 
+		//concepto.Serie = ""; // Este es un valor opcional se agregan numero de series, partes, etc.
+		concepto.setCodigoProducto("53112101"); // Se agrega la clave de acuerdo al catálogo del SAT http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
+		concepto.setProducto("Zapatos de caballero marca patito");
+		concepto.setPrecioUnitario("1000");
+		concepto.setImporte("1000");
 
-            ConceptoCFDI concepto = new ConceptoCFDI();
+		concepto.setImpuestos(new ArrayList<ImpuestosCFDI>());
+		ImpuestosCFDI impuesto = new ImpuestosCFDI();
 
-            concepto.Cantidad = "1";
-            concepto.CodigoUnidad = "E48"; // Se agrega la clave de acuerdo al catálogo del SAT http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
-            //concepto.Unidad = "Pieza"; // Este es un valor opcional 
-            //concepto.Serie = ""; // Este es un valor opcional se agregan numero de series, partes, etc.
-            concepto.CodigoProducto = "53112101";// Se agrega la clave de acuerdo al catálogo del SAT http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
-            concepto.Producto = "Zapatos de caballero marca patito";
-            concepto.PrecioUnitario = "1000";
-            concepto.Importe = "1000";
+		impuesto.setTipoImpuesto(String.valueOf((enumTipoImpuesto.Trasladado.getValue()))); // Tipo de impuesto se envía la clave 1 traslado 2 retenido
+		impuesto.setImpuesto(String.valueOf((enumImpuesto.IVA.getValue())));
+		impuesto.setFactor(String.valueOf((enumFactor.Tasa.getValue())));
+		impuesto.setBase(concepto.getImporte());
+		impuesto.setTasa("0.160000"); // Se debe de enviar con los 6 decimales la tasa para revisar las tasas actuales vea http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
+		impuesto.setImpuestoImporte(utilerias.RegresaStringDecimalesXOpcion(Double.valueOf(concepto.getImporte()) * Double.valueOf("0.160000"), enumOpcionDecimales.Redondear.getValue(), (short)2));
+		concepto.getImpuestos().add(impuesto);
 
-            concepto.Impuestos = new List<ImpuestosCFDI>();
-            ImpuestosCFDI impuesto = new ImpuestosCFDI();
+		// En caso de llevar IEPS se llena esta seccion
+		//if (TasaIEPS != null)
+		//{
+		//    impuesto.TipoImpuesto = ((int)enumTipoImpuesto.Trasladado).ToString(); // Tipo de impuesto se envía la clave 1 traslado 2 retenido
+		//    impuesto.Impuesto = ((int)enumImpuesto.IEPS).ToString();
+		//    impuesto.Factor = ((int)enumFactor.Tasa).ToString();
+		//    impuesto.Base = concepto.Importe;
+		//    impuesto.Tasa = "0.08000"; // en el ejemplo la tasa es de 8 porciento Se debe de enviar con los 6 decimales la tasa para revisar las tasas actuales vea http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
+		//    impuesto.ImpuestoImporte = utilerias.RegresaStringDecimalesXOpcion(Convert.ToDecimal(concepto.Importe) * Convert.ToDecimal("0.080000"), (int)enumOpcionDecimales.Redondear, 2);
+		//    concepto.Impuestos.Add(impuesto);
+		//}
 
-            impuesto.TipoImpuesto = ((int)enumTipoImpuesto.Trasladado).ToString(); // Tipo de impuesto se envía la clave 1 traslado 2 retenido
-            impuesto.Impuesto = ((int)enumImpuesto.IVA).ToString();
-            impuesto.Factor = ((int)enumFactor.Tasa).ToString();
-            impuesto.Base = concepto.Importe;
-            impuesto.Tasa = "0.160000"; // Se debe de enviar con los 6 decimales la tasa para revisar las tasas actuales vea http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
-            impuesto.ImpuestoImporte = utilerias.RegresaStringDecimalesXOpcion(Convert.ToDecimal(concepto.Importe) * Convert.ToDecimal("0.160000"), (int)enumOpcionDecimales.Redondear, 2);
-            concepto.Impuestos.Add(impuesto);
+		//if (RetencionIVA != null)
+		//{
+		//    impuesto.TipoImpuesto = ((int)enumTipoImpuesto.Retenido).ToString(); // Tipo de impuesto se envía la clave 1 traslado 2 retenido
+		//    impuesto.Impuesto = ((int)enumImpuesto.IVA).ToString();
+		//    impuesto.Factor = ((int)enumFactor.Tasa).ToString();
+		//    impuesto.Base = concepto.Importe;
+		//    impuesto.Tasa = "0.106667"; // en el ejemplo la tasa es de 2/3 partes de IVA 10.66667 porciento Se debe de enviar con los 6 decimales la tasa para revisar las tasas actuales vea http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
+		//    impuesto.ImpuestoImporte = utilerias.RegresaStringDecimalesXOpcion(Convert.ToDecimal(concepto.Importe) * Convert.ToDecimal("0.106667"), (int)enumOpcionDecimales.Redondear, 2);
+		//    concepto.Impuestos.Add(impuesto);
+		//}
 
-            // En caso de llevar IEPS se llena esta seccion
-            //if (TasaIEPS != null)
-            //{
-            //    impuesto.TipoImpuesto = ((int)enumTipoImpuesto.Trasladado).ToString(); // Tipo de impuesto se envía la clave 1 traslado 2 retenido
-            //    impuesto.Impuesto = ((int)enumImpuesto.IEPS).ToString();
-            //    impuesto.Factor = ((int)enumFactor.Tasa).ToString();
-            //    impuesto.Base = concepto.Importe;
-            //    impuesto.Tasa = "0.08000"; // en el ejemplo la tasa es de 8 porciento Se debe de enviar con los 6 decimales la tasa para revisar las tasas actuales vea http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
-            //    impuesto.ImpuestoImporte = utilerias.RegresaStringDecimalesXOpcion(Convert.ToDecimal(concepto.Importe) * Convert.ToDecimal("0.080000"), (int)enumOpcionDecimales.Redondear, 2);
-            //    concepto.Impuestos.Add(impuesto);
-            //}
+		//if (RetencionISR != null)
+		//{
+		//    impuesto.TipoImpuesto = ((int)enumTipoImpuesto.Retenido).ToString(); // Tipo de impuesto se envía la clave 1 traslado 2 retenido
+		//    impuesto.Impuesto = ((int)enumImpuesto.ISR).ToString();
+		//    impuesto.Factor = ((int)enumFactor.Tasa).ToString();
+		//    impuesto.Base = concepto.Importe;
+		//    impuesto.Tasa = "0.10000"; // en el ejemplo la tasa es de 10 porciento Se debe de enviar con los 6 decimales la tasa para revisar las tasas actuales vea http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
+		//    impuesto.ImpuestoImporte = utilerias.RegresaStringDecimalesXOpcion(Convert.ToDecimal(concepto.Importe) * Convert.ToDecimal("0.100000"), (int)enumOpcionDecimales.Redondear, 2);
+		//    concepto.Impuestos.Add(impuesto);
+		//}
 
-            //if (RetencionIVA != null)
-            //{
-            //    impuesto.TipoImpuesto = ((int)enumTipoImpuesto.Retenido).ToString(); // Tipo de impuesto se envía la clave 1 traslado 2 retenido
-            //    impuesto.Impuesto = ((int)enumImpuesto.IVA).ToString();
-            //    impuesto.Factor = ((int)enumFactor.Tasa).ToString();
-            //    impuesto.Base = concepto.Importe;
-            //    impuesto.Tasa = "0.106667"; // en el ejemplo la tasa es de 2/3 partes de IVA 10.66667 porciento Se debe de enviar con los 6 decimales la tasa para revisar las tasas actuales vea http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
-            //    impuesto.ImpuestoImporte = utilerias.RegresaStringDecimalesXOpcion(Convert.ToDecimal(concepto.Importe) * Convert.ToDecimal("0.106667"), (int)enumOpcionDecimales.Redondear, 2);
-            //    concepto.Impuestos.Add(impuesto);
-            //}
+		Peticion.getConceptos().add(concepto);
 
-            //if (RetencionISR != null)
-            //{
-            //    impuesto.TipoImpuesto = ((int)enumTipoImpuesto.Retenido).ToString(); // Tipo de impuesto se envía la clave 1 traslado 2 retenido
-            //    impuesto.Impuesto = ((int)enumImpuesto.ISR).ToString();
-            //    impuesto.Factor = ((int)enumFactor.Tasa).ToString();
-            //    impuesto.Base = concepto.Importe;
-            //    impuesto.Tasa = "0.10000"; // en el ejemplo la tasa es de 10 porciento Se debe de enviar con los 6 decimales la tasa para revisar las tasas actuales vea http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
-            //    impuesto.ImpuestoImporte = utilerias.RegresaStringDecimalesXOpcion(Convert.ToDecimal(concepto.Importe) * Convert.ToDecimal("0.100000"), (int)enumOpcionDecimales.Redondear, 2);
-            //    concepto.Impuestos.Add(impuesto);
-            //}
+		concepto = new ConceptoCFDI();
+		concepto.setCantidad("2");
+		concepto.setCodigoUnidad("E48"); // Se agrega la clave de acuerdo al catálogo del SAT http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
+	   //concepto.Unidad = "Pieza"; // Este es un valor opcional 
+	   //concepto.Serie = ""; // Este es un valor opcional se agregan numero de series, partes, etc.
+		concepto.setCodigoProducto("53112102"); // Se agrega la clave de acuerdo al catálogo del SAT http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
+		concepto.setProducto("Zapatos de mujer  marca patito");
+		concepto.setPrecioUnitario("250");
+		concepto.setImporte("500");
 
-            Peticion.Conceptos.Add(concepto);
+		concepto.setImpuestos(new ArrayList<ImpuestosCFDI>());
+		impuesto = new ImpuestosCFDI();
 
-            concepto = new ConceptoCFDI();
-            concepto.Cantidad = "2";
-            concepto.CodigoUnidad = "E48"; // Se agrega la clave de acuerdo al catálogo del SAT http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
-                                           //concepto.Unidad = "Pieza"; // Este es un valor opcional 
-                                           //concepto.Serie = ""; // Este es un valor opcional se agregan numero de series, partes, etc.
-            concepto.CodigoProducto = "53112102";// Se agrega la clave de acuerdo al catálogo del SAT http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
-            concepto.Producto = "Zapatos de mujer  marca patito";
-            concepto.PrecioUnitario = "250";
-            concepto.Importe = "500";
+		impuesto.setTipoImpuesto(String.valueOf((enumTipoImpuesto.Trasladado.getValue()))); // Tipo de impuesto se envía la clave 1 traslado 2 retenido
+		impuesto.setImpuesto(String.valueOf((enumImpuesto.IVA.getValue())));
+		impuesto.setFactor(String.valueOf((enumFactor.Tasa.getValue())));
+		impuesto.setBase(concepto.getImporte());
+		impuesto.setTasa("0.160000"); // Se debe de enviar con los 6 decimales la tasa para revisar las tasas actuales vea http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
+		impuesto.setImpuestoImporte(utilerias.RegresaStringDecimalesXOpcion(Double.valueOf(concepto.getImporte()) * Double.valueOf("0.160000"), enumOpcionDecimales.Redondear.getValue(), (short)2));
+		concepto.getImpuestos().add(impuesto);
 
-            concepto.Impuestos = new List<ImpuestosCFDI>();
-            impuesto = new ImpuestosCFDI();
+		Peticion.getConceptos().add(concepto);
 
-            impuesto.TipoImpuesto = ((int)enumTipoImpuesto.Trasladado).ToString(); // Tipo de impuesto se envía la clave 1 traslado 2 retenido
-            impuesto.Impuesto = ((int)enumImpuesto.IVA).ToString();
-            impuesto.Factor = ((int)enumFactor.Tasa).ToString();
-            impuesto.Base = concepto.Importe;
-            impuesto.Tasa = "0.160000"; // Se debe de enviar con los 6 decimales la tasa para revisar las tasas actuales vea http://omawww.sat.gob.mx/tramitesyservicios/Paginas/documentos/catCFDI.xls
-            impuesto.ImpuestoImporte = utilerias.RegresaStringDecimalesXOpcion(Convert.ToDecimal(concepto.Importe) * Convert.ToDecimal("0.160000"), (int)enumOpcionDecimales.Redondear, 2);
-            concepto.Impuestos.Add(impuesto);
+		ComprobanteDigital comprobante = new ComprobanteDigital();
+		comprobante.setSandBox(true); // True = pruebas,  False= Productivo
 
-            Peticion.Conceptos.Add(concepto);
+		//Para el ejercicio se usan los certificados de prueba del SAT
+		// Tambien se puede enviar un stream o arreglo de bytes
+		String RutaCertificado = DirectorioRecursos + "Certificado\\AAA010101AAA.cer";
+		String RutaLlavePrivada = DirectorioRecursos + "Certificado\\AAA010101AAA.key";
+		String RutaTimbrados = DirectorioRecursos + "Timbrados\\";
 
-            #endregion "Conceptos"
+		System.out.println("Inicio de Timbrado " + LocalDateTime.now());
 
-            #region "Realiza el Timbrado"
+		Archivos archivo = new 	Archivos();
+		
+		byte[] Certificado = archivo.ConvertirStreamToByte(archivo.Abrir(RutaCertificado));
+		byte[] LlavePrivada = archivo.ConvertirStreamToByte(archivo.Abrir(RutaLlavePrivada));
 
-            FacturoPorTi.Api.Cfdi.ComprobanteDigital comprobante = new FacturoPorTi.Api.Cfdi.ComprobanteDigital();
-            comprobante.SandBox = true; // True = pruebas,  False= Productivo
+		boolean resultado = comprobante.GeneraCFDI(Peticion, Certificado, LlavePrivada, "12345678a");
 
-            //Para el ejercicio se usan los certificados de prueba del SAT
-            // Tambien se puede enviar un stream o arreglo de bytes
-            string RutaCertificado = ObtieneDirectorioAplicacion() + @"\Certificado\AAA010101AAA.cer";
-            string RutaLlavePrivada = ObtieneDirectorioAplicacion() + @"\Certificado\AAA010101AAA.key";
-            string RutaTimbrados = ObtieneDirectorioAplicacion() + @"\Timbrados\";
+		if (resultado == true)
+		{
+			LocalDateTime fecha =  LocalDateTime.parse(Peticion.getEncabezado().getFecha());
+	        formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
-            Console.WriteLine("Inicio de Timbrado " + DateTime.Now);
-            
-            var resultado = comprobante.GeneraCFDI(Peticion, RutaCertificado, RutaLlavePrivada, "12345678a");
+			NombreArchivo = Peticion.getEncabezado().getReceptor().getRFC() + AcronimoArchivo(TipoDocumentoActual) + (Peticion.getEncabezado().getSerie() == null ? "" : Peticion.getEncabezado().getSerie()) + Peticion.getEncabezado().getFolio() + "_" + now.format(formatter);
+			manager.Guardar(manager.ConvertirBase64ToByte(comprobante.getTimbrado().getCFDITimbrado().getRespuesta().getCFDIXML()), RutaTimbrados + NombreArchivo + ".xml");
+			manager.Guardar(manager.ConvertirBase64ToByte(comprobante.getTimbrado().getCFDITimbrado().getRespuesta().getPDF()), RutaTimbrados + NombreArchivo + ".pdf");
 
-            if (resultado == true)
-            {
-                NombreArchivo = Peticion.Encabezado.Receptor.RFC + AcronimoArchivo(TipoDocumentoActual) + (Peticion.Encabezado.Serie == null ? "" : Peticion.Encabezado.Serie) + Peticion.Encabezado.Folio + "_" + Convert.ToDateTime(Peticion.Encabezado.Fecha).ToString("yyyyMMdd");                
-                manager.Guardar(manager.ConvertirBase64ToByte(comprobante.Timbrado.CFDITimbrado.Respuesta.CFDIXML), RutaTimbrados + NombreArchivo + ".xml");
-                manager.Guardar(manager.ConvertirBase64ToByte(comprobante.Timbrado.CFDITimbrado.Respuesta.PDF), RutaTimbrados + NombreArchivo + ".pdf");
+			Timbre = CargaTimbre((new Archivos()).ConvertirBase64ToString(comprobante.getTimbrado().getCFDITimbrado().getRespuesta().getTimbreXML()));
+			
+			System.out.println(comprobante.getMensaje() + " UUID " + getUUID());
+			System.out.println(" Para ver los archivos ingrese a la carpeta " + RutaTimbrados);
+		}
+		else
+		{
+			System.out.println("");
+			System.out.println(comprobante.getMensaje());
+		}
 
-                Timbre = utilerias.CargaObjetoDeXML<TimbreFiscalDigital>(new TimbreFiscalDigital(), new Archivos().ConvertirBase64ToString(comprobante.Timbrado.CFDITimbrado.Respuesta.TimbreXML));
-                UUID = Timbre.UUID;
-                Console.WriteLine(comprobante.Mensaje + " UUID " + UUID);
-                Console.WriteLine(" Para ver los archivos ingrese a la carpeta " + RutaTimbrados);
-            }
-            else
-            {
-                Console.WriteLine("");
-                Console.WriteLine(comprobante.Mensaje);
-            }
+		System.out.println("Fin de Timbrado");
+		System.out.println("");
+	}
+  
+  public static String AcronimoArchivo(enumTipoDocumento TipoDocumentoActual)
+	{
+		String nombre = "";
 
-            Console.WriteLine("Fin de Timbrado");
-            Console.WriteLine("");
-            //Console.ReadLine();
+		switch (TipoDocumentoActual)
+		{
+			case Factura:
+				nombre = "_FAC_";
+				break;
+			case NotaCargo:
+				nombre = "_NCA_";
+				break;
+			case NotaCredito:
+				nombre = "_NCE_";
+				break;
+			case ReciboHonorarios:
+				nombre = "_RHO_";
+				break;
+			case ReciboArrendamiento:
+				nombre = "_RARR_";
+				break;
+			case CartaPorte:
+				nombre = "_CPT_";
+				break;
+			case ReciboNominaCFDI:
+				nombre = "_RNOM_";
+				break;
+			case ReciboDonatario:
+				nombre = "_RDON_";
+				break;
+			case Pago:
+				nombre = "_PAGO_";
+				break;
+		}
 
-            #endregion "Realiza el Timbrado"
+		return nombre;
+	}
 
-        }
+	public static final TimbreFiscalDigital CargaTimbre(String xmlString) throws SAXException, IOException, ParserConfigurationException
+	{
+		String mensaje = "";
+			
+		TimbreFiscalDigital objeto = new TimbreFiscalDigital(); 
+		
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		DocumentBuilder builder = factory.newDocumentBuilder();
+		
+		ByteArrayInputStream input = new ByteArrayInputStream(xmlString.getBytes("UTF-8"));
+		Document doc = builder.parse(input);
+		Element root = doc.getDocumentElement();
+		
+		objeto.setUUID(root.getAttribute("UUID"));
+		setUUID(objeto.getUUID());
+		objeto.setFechaTimbrado(root.getAttribute("FechaTimbrado"));
+		objeto.setRfcProvCertif(root.getAttribute("RfcProvCertif"));
+		objeto.setLeyenda(root.getAttribute("Leyenda"));
+		objeto.setSelloCFD(root.getAttribute("SelloCFD"));
+		objeto.setNoCertificadoSAT(root.getAttribute("NoCertificadoSAT"));
+		objeto.setSelloSAT(root.getAttribute("SelloSAT"));
+		
+		return objeto;
+	}
+}
  
 ```
 
@@ -316,51 +383,46 @@ Los atributos **CFDIXML, TimbreXML y PDF estan en Base64** se deberán de conver
 
 ## Cancelar
 
-La librería permite mandar uno o varios Folios Fiscales para cancelar al mismo tiempo solo se debe de enviar el usuario, contraseña, rfc del emisor, y certificado digital. 
+El jar permite mandar uno o varios Folios Fiscales para cancelar al mismo tiempo solo se debe de enviar el usuario, contraseña, rfc del emisor y certificado digital. 
 
-```csharp
- private static void CancelarUUID()
-        {
-            CancelarCFDIPeticion Peticion = new CancelarCFDIPeticion();
+```java
+  private static void CancelarUUID() throws FileNotFoundException, IOException
+	{
+		CancelarCFDIPeticion Peticion = new CancelarCFDIPeticion();
 
-            Peticion.Usuario = "PruebasTimbrado"; // Este usuario se genera desde la pagina de https://cfdi.facturoporti.com.mx/ se debe de registrar para usar el productivo
-            Peticion.Password = "@Notiene1"; // Es la contraseña del usuario cuando se registró
-            Peticion.RFC = "AAA010101AAA";
+		Peticion.setUsuario("PruebasTimbrado"); // Este usuario se genera desde la pagina de https://cfdi.facturoporti.com.mx/ se debe de registrar para usar el productivo
+		Peticion.setPassword("@Notiene1"); // Es la contraseña del usuario cuando se registró
+		Peticion.setRFC("AAA010101AAA");
 
-            Peticion.UUIDs = new List<string>();
-            Peticion.UUIDs.Add(UUID);
+		Peticion.setUUIDs(new ArrayList<String>());
+		Peticion.getUUIDs().add(getUUID()); // Aca se pueden agregar N folios fiscales
 
-            #region "Realiza la cancelación"
+		ComprobanteDigital comprobante = new ComprobanteDigital();
+		comprobante.setSandBox(true); // True = pruebas,  False= Productivo
 
-            FacturoPorTi.Api.Cfdi.ComprobanteDigital comprobante = new FacturoPorTi.Api.Cfdi.ComprobanteDigital();
-            comprobante.SandBox = true; // True = pruebas,  False= Productivo
+		//Para el ejercicio se usan los certificados de prueba del SAT
+		// Tambien se puede enviar un stream o arreglo de bytes
+		String RutaCertificado = DirectorioRecursos + "Certificado\\AAA010101AAA.cer";
+		String RutaLlavePrivada = DirectorioRecursos + "Certificado\\AAA010101AAA.key";
 
-            //Para el ejercicio se usan los certificados de prueba del SAT
-            // Tambien se puede enviar un stream o arreglo de bytes
-            string RutaCertificado = ObtieneDirectorioAplicacion() + @"\Certificado\AAA010101AAA.cer";
-            string RutaLlavePrivada = ObtieneDirectorioAplicacion() + @"\Certificado\AAA010101AAA.key";
-            
-            Console.WriteLine("Inicio de cancelación " + DateTime.Now);
+		System.out.println("Inicio de cancelación " + LocalDateTime.now());
 
-            var resultado = comprobante.CancelarCFDI(Peticion, RutaCertificado, RutaLlavePrivada, "12345678a");
+		boolean resultado = comprobante.CancelarCFDI(Peticion, RutaCertificado, RutaLlavePrivada, "12345678a");
 
-            if (resultado == true)
-            {
-                Console.WriteLine(comprobante.Mensaje + " Respuesta del Folio " + comprobante.Cancelaciones.FoliosRespuesta[0].EstatusCancelacionSAT);
-            }
-            else
-            {
-                Console.WriteLine("");
-                Console.WriteLine(comprobante.Mensaje);
-            }
+		if (resultado == true)
+		{
+			System.out.println(comprobante.getMensaje() + " Respuesta del Folio " + comprobante.getCancelaciones().getFoliosRespuesta().get(0).EstatusCancelacionSAT);
+		}
+		else
+		{
+			System.out.println("");
+			System.out.println(comprobante.getMensaje());
+		}
 
-            Console.WriteLine("Fin de la cancelación");
-            Console.WriteLine("");
-            //Console.ReadLine();
+		System.out.println("Fin de la cancelación");
+		System.out.println("");
 
-            #endregion "Realiza el Timbrado"
-
-        }
+	}
 ```
 
 ## Probar Cancelación de CFDI
@@ -369,47 +431,42 @@ Si usas el proyecto con el código de ejemplo **Ejecuta o depura la aplicación*
 
 ## Consultar Estatus de la cancelación
 
-La librería permite consultar uno o varios Folios Fiscales para revisar el  estatus de la cancelación; de acuerdo a las normas dictadas por el SAT el CFDI dependiendo de las reglas que apliquen puede cancelarse de inmediato o se deberá de esperar un máximo de 72 horas para que el usuario receptor del CFDI acepte o rechace la cancelación del CFDI.
+El proyecto de ejemplo permite consultar uno o varios Folios Fiscales para revisar el estatus de la cancelación; de acuerdo a las normas dictadas por el SAT el CFDI dependiendo de las reglas que apliquen puede cancelarse de inmediato o se deberá de esperar un máximo de 72 horas para que el usuario receptor del CFDI acepte o rechace la cancelación del CFDI.
 
 En ese lapso de 72 horas de manera automática se podrá actualizar el estatus del CFDI por lo que se requiere periodicamente consultar el servicio para validar el estatus actual del CFDI. No se recomienda hacerlo con una periodicidad menor a 1 hora ya que el SAT tarda de igual manera de 1 a 72 horas en ver reflejado el cambio de estatus. Asi que se sugiere que manden a llamar este servicio con un lapso mayor a 1 hora cada vez, antes de ese tiempo será en vano consultar el estatus del CFDI.
 
-```csharp
+```java
   private static void ConsultarEstatusUUID()
-        {
-            ConsultaEstatusPeticion Peticion = new ConsultaEstatusPeticion();
+	{
+		ConsultaEstatusPeticion Peticion = new ConsultaEstatusPeticion();
 
-            Peticion.Usuario = "PruebasTimbrado"; // Este usuario se genera desde la pagina de https://cfdi.facturoporti.com.mx/ se debe de registrar para usar el productivo
-            Peticion.Password = "@Notiene1"; // Es la contraseña del usuario cuando se registró
+		Peticion.setUsuario("PruebasTimbrado"); // Este usuario se genera desde la pagina de https://cfdi.facturoporti.com.mx/ se debe de registrar para usar el productivo
+		Peticion.setPassword("@Notiene1"); // Es la contraseña del usuario cuando se registró
 
-            Peticion.UUIDs = new List<string>();
-            Peticion.UUIDs.Add(UUID);
+		Peticion.setUUIDs(new ArrayList<String>());
+		Peticion.getUUIDs().add(getUUID()); // Aca se pueden agregar N folios fiscales
 
-            #region "Realiza la cancelación"
+		ComprobanteDigital comprobante = new ComprobanteDigital();
+		comprobante.setSandBox(true); // True = pruebas,  False= Productivo
 
-            FacturoPorTi.Api.Cfdi.ComprobanteDigital comprobante = new FacturoPorTi.Api.Cfdi.ComprobanteDigital();
-            comprobante.SandBox = true; // True = pruebas,  False= Productivo
-            
-            Console.WriteLine("Inicio de consulta " + DateTime.Now);
+		System.out.println("Inicio de consulta " + LocalDateTime.now());
 
-            var resultado = comprobante.ConsultaEstatusCFDI(Peticion);
+		boolean resultado = comprobante.ConsultaEstatusCFDI(Peticion);
 
-            if (resultado == true)
-            {
-                Console.WriteLine(comprobante.Mensaje + " " + comprobante.EstatusFolios.FoliosRespuesta[0].EstatusCancelacionSAT);
-            }
-            else
-            {
-                Console.WriteLine("");
-                Console.WriteLine(comprobante.Mensaje);
-            }
+		if (resultado == true)
+		{
+			System.out.println(comprobante.getMensaje() + " " + comprobante.getEstatusFolios().getFoliosRespuesta().get(0).EstatusCancelacionSAT);
+		}
+		else
+		{
+			System.out.println("");
+			System.out.println(comprobante.getMensaje());
+		}
 
-            Console.WriteLine("Fin de la consulta");
-            Console.WriteLine("");
-            //Console.ReadLine();
+		System.out.println("Fin de la consulta");
+		System.out.println("");
 
-            #endregion "Realiza el Timbrado"
-
-        }
+	}
 ```
 
 ## Consultar Timbres Restantes 
@@ -424,37 +481,32 @@ Como tenemos varios paquetes con características distintas en cuanto a uso y pr
 
 ```csharp
   private static void ConsultarTimbresRestantes()
+	{		
+		ConsultaTimbresRestantesPeticion Peticion = new ConsultaTimbresRestantesPeticion();
+		Peticion.setUsuario("PruebasTimbrado"); // Este usuario se genera desde la pagina de https://cfdi.facturoporti.com.mx/ se debe de registrar para usar el productivo
+		Peticion.setPassword("@Notiene1"); // Es la contraseña del usuario cuando se registró
+		   
+		ComprobanteDigital comprobante = new ComprobanteDigital();
+		comprobante.setSandBox(true); // True = pruebas,  False= Productivo
+		
+		System.out.println("Inicio de consulta de timbres restantes " + LocalDateTime.now());
+		System.out.println("");
+ 
+		ConsultaTimbresRestantesRespuesta resultado = comprobante.ConsultaTimbresRestantes(Peticion);
+
+		if (comprobante.getResultado() == true)
         {
-            ConsultaTimbresRestantesPeticion Peticion = new ConsultaTimbresRestantesPeticion();
-
-            Peticion.Usuario = "PruebasTimbrado"; // Este usuario se genera desde la pagina de https://cfdi.facturoporti.com.mx/ se debe de registrar para usar el productivo
-            Peticion.Password = "@Notiene1"; // Es la contraseña del usuario cuando se registró
-
-            #region "Realiza la cancelación"
-
-            FacturoPorTi.Api.Cfdi.ComprobanteDigital comprobante = new FacturoPorTi.Api.Cfdi.ComprobanteDigital();
-            comprobante.SandBox = true; // True = pruebas,  False= Productivo
-
-            Console.WriteLine("Inicio de consulta de timbres restantes " + DateTime.Now);
-
-            var resultado = comprobante.ConsultaTimbresRestantes(Peticion);
-
-            if (comprobante.Resultado == true)
-            {
-                Console.WriteLine(comprobante.Mensaje);
-                Console.WriteLine(" Fecha de Compra = " + resultado.FechaCompra + " Timbres Utilizados= " + resultado.TimbresUtilizados + " CreditosRestantes = " + resultado.CreditosRestantes);
-            }
-            else
-            {
-                Console.WriteLine("");
-                Console.WriteLine(comprobante.Mensaje);
-            }
-
-            Console.WriteLine("Fin de la consulta de timbres restantes");
-            Console.ReadLine();
-
-            #endregion "Realiza el Timbrado"
+			System.out.println(comprobante.getMensaje());
+			System.out.println(" Fecha de Compra = " + resultado.getFechaCompra() + " Timbres Utilizados= " + resultado.getTimbresUtilizados() + " CreditosRestantes = " + resultado.getCreditosRestantes());
         }
+        else
+        {
+        	System.out.println("");
+        	System.out.println(comprobante.getMensaje());
+        }
+
+		System.out.println("Fin de la consulta de timbres restantes");
+	}
 ```
 ## Documentación Adicional
 
@@ -470,7 +522,7 @@ En caso de que necesites ayuda o tengas dudas contáctanos a soporte@facturoport
 
 2. Clona el repositorio
 
-    git clone git@github.com:yourUserName/factura-electronica-Dll-Api-Rest.git
+    git clone git@github.com:yourUserName/factura-electronica-Dll-Java-Jar-Api-Rest.git
 
 3. Crea una rama 
 ```
@@ -493,5 +545,5 @@ En caso de que necesites ayuda o tengas dudas contáctanos a soporte@facturoport
 
 ## License
 
-Desarrollado en México por [FacturoPorTi](https://www.FacturoPorTi.com.mx). Licencia de uso [Ver mas](https://github.com/facturoporti/factura-electronica-Dll-Api-Rest/blob/master/Licencia).
+Desarrollado en México por [FacturoPorTi](https://www.FacturoPorTi.com.mx). Licencia de uso [Ver mas](https://github.com/facturoporti/factura-electronica-Dll-Java-Jar-Api-Rest/blob/master/Licencia).
 ****
