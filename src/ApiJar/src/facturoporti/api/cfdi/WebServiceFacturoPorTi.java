@@ -68,15 +68,15 @@ public class WebServiceFacturoPorTi
 
 	public final GeneraCFDIApiRespuesta Timbrar(CFDIPeticion peticion)  
 	{
- 	    Url = "http://wcfpruebas.facturoporti.com.mx/Timbrado/Servicios.svc/ApiTimbrarCFDI";
+ 	    Url = "https://wcfpruebas.facturoporti.com.mx/Timbrado/Servicios.svc/ApiTimbrarCFDI";
 	   
 		if (getEsSandBox() == false)
 		{
-			Url = "http://wcf.facturoporti.com.mx/Timbrado/Servicios.svc/ApiTimbrarCFDI";
+			Url = "https://wcf.facturoporti.com.mx/Timbrado/Servicios.svc/ApiTimbrarCFDI";
 		}
 		else
 		{
-			Url = "http://wcfpruebas.facturoporti.com.mx/Timbrado/Servicios.svc/ApiTimbrarCFDI";
+			Url = "https://wcfpruebas.facturoporti.com.mx/Timbrado/Servicios.svc/ApiTimbrarCFDI";
 		}
 
 		//Url = "http://localhost:52860/Servicios.svc/ApiTimbrarCFDI";
@@ -96,15 +96,15 @@ public class WebServiceFacturoPorTi
 	
 	public final CancelarCFDIRespuesta Cancelar(CancelarCFDIPeticion peticion)  
 	{
- 	    Url = "http://wcfpruebas.facturoporti.com.mx/Timbrado/Servicios.svc/ApiCancelarCFDI";
+ 	    Url = "https://wcfpruebas.facturoporti.com.mx/Timbrado/Servicios.svc/ApiCancelarCFDI";
 	   
 		if (getEsSandBox() == false)
 		{
-			Url = "http://wcf.facturoporti.com.mx/Timbrado/Servicios.svc/ApiCancelarCFDI";
+			Url = "https://wcf.facturoporti.com.mx/Timbrado/Servicios.svc/ApiCancelarCFDI";
 		}
 		else
 		{
-			Url = "http://wcfpruebas.facturoporti.com.mx/Timbrado/Servicios.svc/ApiCancelarCFDI";
+			Url = "https://wcfpruebas.facturoporti.com.mx/Timbrado/Servicios.svc/ApiCancelarCFDI";
 		}
 		
 		//Url = "http://localhost:52860/Servicios.svc/ApiCancelarCFDI";
@@ -124,15 +124,15 @@ public class WebServiceFacturoPorTi
 	
 	public final ConsultaEstatusRespuesta ConsultarEstatus(ConsultaEstatusPeticion peticion)  
 	{
- 	    Url = "http://wcfpruebas.facturoporti.com.mx/Timbrado/Servicios.svc/ApiConsultaEstatusCFDI";
+ 	    Url = "https://wcfpruebas.facturoporti.com.mx/Timbrado/Servicios.svc/ApiConsultaEstatusCFDI";
 	   
 		if (getEsSandBox() == false)
 		{
-			Url = "http://wcf.facturoporti.com.mx/Timbrado/Servicios.svc/ApiConsultaEstatusCFDI";
+			Url = "https://wcf.facturoporti.com.mx/Timbrado/Servicios.svc/ApiConsultaEstatusCFDI";
 		}
 		else
 		{
-			Url = "http://wcfpruebas.facturoporti.com.mx/Timbrado/Servicios.svc/ApiConsultaEstatusCFDI";
+			Url = "https://wcfpruebas.facturoporti.com.mx/Timbrado/Servicios.svc/ApiConsultaEstatusCFDI";
 		}
 		
 		//Url = "http://localhost:52860/Servicios.svc/ApiConsultaEstatusCFDI";
@@ -152,15 +152,15 @@ public class WebServiceFacturoPorTi
 	
 	public final ConsultaTimbresRestantesRespuesta ConsultaTimbresRestantes(ConsultaTimbresRestantesPeticion peticion)  
 	{
- 	    Url = "http://wcfpruebas.facturoporti.com.mx/Timbrado/Servicios.svc/ApiConsultaTimbresRestantes";
+ 	    Url = "https://wcfpruebas.facturoporti.com.mx/Timbrado/Servicios.svc/ApiConsultaTimbresRestantes";
 	   
 		if (getEsSandBox() == false)
 		{
-			Url = "http://wcf.facturoporti.com.mx/Timbrado/Servicios.svc/ApiConsultaTimbresRestantes";
+			Url = "https://wcf.facturoporti.com.mx/Timbrado/Servicios.svc/ApiConsultaTimbresRestantes";
 		}
 		else
 		{
-			Url = "http://wcfpruebas.facturoporti.com.mx/Timbrado/Servicios.svc/ApiConsultaTimbresRestantes";
+			Url = "https://wcfpruebas.facturoporti.com.mx/Timbrado/Servicios.svc/ApiConsultaTimbresRestantes";
 		}
 
 		//Url = "http://localhost:52860/Servicios.svc/ApiConsultaTimbresRestantes";
